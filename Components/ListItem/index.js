@@ -6,6 +6,7 @@ import {
 } from 'react-native';
 import styles from './styles';
 import Swipeable from 'react-native-gesture-handler/Swipeable'
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
 const LeftActions = (progress, dragX) => {
@@ -17,37 +18,38 @@ const LeftActions = (progress, dragX) => {
     })
 
     return <View style={styles.leftActionStyle}>
-        <Animated.Text style={{ transform: [{ scale: scaleText }] }}>Archive</Animated.Text>
+        <Animated.Text style={{ transform: [{ scale: scaleText }], color: '#fff' }}>Swipe Right To Archive</Animated.Text>
     </View>
 }
 
-const RightActions = (progress, dragX) => {
+const RightActions = (progress, dragX, props) => {
 
     const scaleText = dragX.interpolate({
         inputRange: [-100, 0],
-        outputRange: [1, 0.5],
+        outputRange: [1.4, 0.4],
         extrapolate: 'clamp'
     })
 
-    return <View style={styles.rightActionStyle}>
-        <Animated.Text style={{ transform: [{ scale: scaleText }] }}>Delete</Animated.Text>
-    </View>
+    return  <TouchableOpacity onPress={props.onSwipeRight}>
+            <Animated.View style={[styles.rightActionStyle,{ transform: [{ scale: scaleText }] }]}>
+            <Text style={{color: '#fff'}}>Delete</Text>
+            </Animated.View>
+        </TouchableOpacity>
+
 }
- 
+
 
 const ListItem = (props) => {
 
     return (
         <Swipeable
             renderLeftActions={LeftActions}
-            renderRightActions={RightActions} 
-            // onSwipeableLeftOpen={props.onSwipeLeft} 
-            // onSwipeableRightOpen={props.onSwipeRight}
+            renderRightActions={( progress, dragX ) => RightActions(progress, dragX, props)}
+            onSwipeableLeftOpen={props.onSwipeLeft}  
             useNativeAnimations
             overshootRight={false}
-            rightThreshold={.3}
-            key={props.key}  
->
+            key={props.key}
+        >
             <View style={styles.ContainerStyle}>
                 <Text>{props.text}</Text>
             </View>
